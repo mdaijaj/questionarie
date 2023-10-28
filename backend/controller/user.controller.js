@@ -1,7 +1,7 @@
 const questionAnswer= require('../models/user_schema');
 
 //signup user
-const createQuestionAnswer= async (req,res)=>{
+const createSingleQuestionAns= async (req,res)=>{
     try{
         const {
             question, answer
@@ -12,7 +12,7 @@ const createQuestionAnswer= async (req,res)=>{
         }
         const questionExits= await questionAnswer.find({question: question}).exec()
         if(questionExits.length>0){
-            return res.send({message: "user already exit please go to login..."})
+            return res.send({message: "data already exits.."})
         }else{
             let user= new questionAnswer({question, answer})
             await user.save();
@@ -23,6 +23,46 @@ const createQuestionAnswer= async (req,res)=>{
                 data: user,
             });
         }
+    }
+    catch(err){
+        console.log(err.message)
+        res.status(200).send({message:"therei is someting error..", error: err.message});
+    }
+}
+
+
+//signup user
+const createQuestionAnswer= async (req,res)=>{
+    try{
+        const {
+            question, answerz
+        }= req.body;
+        console.log(req.body)
+        let mainarr=[];
+        if(!req.body.data){
+            return res.send({message: "please fill all fields"})
+        }
+        req.body.data.map( async(item)=>{
+            const questionExits= await questionAnswer.findOne({question: item.question}).exec()
+            if(questionExits){
+                console.log("user already exit please go to login...")
+            }else{
+                if(item.question==undefined){
+                    let user= new questionAnswer({question: item.question, answer: item.answer, multiple_data: item})
+                    await user.save();
+                }else{
+                    let user= new questionAnswer({question: item.question, answer: item.answer})
+                    mainarr.push(user)
+                    await user.save();
+                }
+            }
+        })
+        return res.status(200).send({
+            status: "success",
+            message: "Registration successfully",
+            statusCode: 200,
+            data: mainarr,
+        });
     }
     catch(err){
         console.log(err.message)
@@ -88,7 +128,8 @@ const questionAnswerDetails= async (req,res)=>{
 
 module.exports={
     createQuestionAnswer,
+    createSingleQuestionAns,
     questionAnswerDetails,
     getAllQuestionAnswer,
-    updateQuestionAnswer
+    updateQuestionAnswer,
 }
