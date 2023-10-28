@@ -8,6 +8,9 @@ var question_answer_schema = new Schema({
     answer: {
         type: String,
     },
+    multiple_data: {
+        type: JSON,
+    }
 }, 
 {
     timestamps: true
