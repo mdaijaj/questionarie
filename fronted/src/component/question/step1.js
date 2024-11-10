@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from 'axios'
 import Step2 from './step2'
 
 
@@ -10,9 +9,8 @@ const Step1 = () => {
 
     const [pagecount, setPagecount]= useState({
         counter: 1,
-        total: 6
+        total: 5
     })
-    console.log("aijaj")
     const countdataItem=(data)=>{
         let obj={}
         obj["counter"]=pagecount.counter+1
@@ -36,25 +34,9 @@ const Step1 = () => {
         setQuestion_ans({ ...question_ans, [e.target.name]: e.target.value })
     }
 
-
-    const SaveAnswer = async (e) => {
-        e.preventDefault();
-        const { question, answer, counter } = question_ans;
-        const res = await axios.post('/api/create_single_question_answer', { question, answer })
-        console.log("res", res)
-        if (res.status === 400 || !res) {
-            window.alert("Invalid Registration");
-            console.log("Invalid Registration")
-        }
-        else {
-            window.alert("question add successfully!")
-        }
-    }
-
     let obj = {
         margin: "20px"
     }
-
 
     return (
         <div>
@@ -62,15 +44,18 @@ const Step1 = () => {
                 <Step2 data={mainArr} page_data={countdataItem} data2={pagecount}/>
                 :
                 (
-                    <><h1>Step1</h1>
+                    <><h3>Question 1:</h3>
                         <div className="container">
-                            <form onSubmit={SaveAnswer}>
-                                {/* <h2>Question 1:- What is your name?</h2> */}
-                                <span> Question 1:- </span>
+                            <form>
+                                <h2>What is your name? </h2>
+                                <label>
+                                    First Name : 
+                                </label> <br/>
                                 <input type="text" name="question" onChange={handleChange} required /><br /><br />
-                                <span> Answer:- </span>
-                                <input type="text" name="answer" onChange={handleChange} required /><br />
-                                <button style={obj} type="submit" className="btn btn-success">Save Answer</button>
+                                <label>
+                                    Last Name : 
+                                </label> <br/>
+                                <input type="text" name="answer" onChange={handleChange} required /><br /><br />
                                 <button className="btn btn-info" onClick={() => Goto(question_ans)}>go to step2</button>
                             </form>
                         </div>
